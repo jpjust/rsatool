@@ -1,0 +1,79 @@
+RSA Tool library
+Copyright (c) 2005 - 2006 João Paulo Just Peixoto <just1982@gmail.com>
+All rights reserved.
+http://just.pro.br/
+
+--------------------
+This library can encrypt and decrypt small text messages using the RSA
+algorithm. Using the functions in "rsatool.h", you can generate a random
+RSA key (public and private) and you can also use this generated key to
+encrypt and decrypt text.
+
+To build the library, just run the "build.sh" script.
+
+	./build.sh
+
+After building the library, install it:
+
+	./install.sh
+
+install.sh will copy the library and the include file to the system
+directories. You can use the script "build_ui.sh" to build a small example
+program which uses the RSA Tool library. Its source code is in "rsatool_ui.c".
+
+The only dependency is the GNU Multiple Precision Arithmetic Library
+(www.swox.com/gmp).
+
+--------------------
+It's easy to use this library. First, you must generate a RSA key using the
+rsa_gen_key() function. Its syntax is:
+
+	struct rsa_key_st rsa_gen_key(int keysize_int);
+
+keysize_int is the size of the key in bits. Bigger the size, more difficult to
+break the encryption. This function returns a rsa_key_st structure which represents
+the generated key.
+
+This is the rsa_key_st structure:
+
+	struct rsa_key_st
+	{
+		int size;
+		char *n;
+		char *e;
+		char *d;
+	};
+
+size is the size of the key. n, e and d are some variables used in the RSA
+algorithm (search for the RSA algorithm in Google if you want to learn details
+about these variables).
+
+To encrypt a text, use the rsa_encrypt() function. Its syntax is:
+
+	char *rsa_encrypt(char *message, struct rsa_key_st key);
+
+message is a char array which may contain the message to be encrypted. key is
+the key that will be used in the encryption algorithm. This function returns
+the encrypted message. You can use a char pointer, the function will
+automatically allocate memory for your pointer.
+
+To decrypt a text, use the rsa_decrypt() function. Its syntax is:
+
+	char *rsa_encrypt(char *message, struct rsa_key_st key);
+
+message is a char array with the encrypted message. key is the key that will
+be used in the decryption algorithm. This function returns the decrypted
+message. You can use a char pointer, the function will automatically allocate
+memory for your pointer.
+
+--------------------
+SOME KEY HANDLING DETAILS
+
+You must have in mind that the key used for encryption is the public key
+(variable 'e' in the key structure). This is the key you can distribute to
+other people, so they can encrypt messages and send them to you. The key used
+for decryption is the private key (variable 'd' in the key structure). THIS
+KEY CAN DECRYPT MESSAGES ENCRYPTED WITH THE PUBLIC KEY AND MUST BE KEPT IN
+SECRET. If someone gets your private key, he/she can decrypt your messages.
+So, if you want receive encrypted messages from others, distribute only the
+public key (once again, variable 'e' in the key structure).
